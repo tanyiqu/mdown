@@ -18,109 +18,109 @@ def getPre(url: str):
 
 
 class M3u8:
-    __url__ = ''  # m3u8链接
-    __urlPre__ = ''  # m3u8链接前缀
-    __innerUrl__ = ''  # 内层m3u8链接
-    __innerUrlPre__ = ''  # 内层m3u8链接前缀
-    __indexContent__ = ''  # 外层文件内容
-    __content__ = ''  # 内层文件内容
-    __tsList__ = []  # ts文件集合
+    __url = ''  # m3u8链接
+    __urlPre = ''  # m3u8链接前缀
+    __innerUrl = ''  # 内层m3u8链接
+    __innerUrlPre = ''  # 内层m3u8链接前缀
+    __indexContent = ''  # 外层文件内容
+    __content = ''  # 内层文件内容
+    __tsList = []  # ts文件集合
     __tsLength = 0
-    __isM3u8__ = False  # 是否是m3u8链接
+    __isM3u8 = False  # 是否是m3u8链接
 
     # 构造
     def __init__(self, url):
-        self.__url__ = url
-        self.detectUrl()
-        if self.__isM3u8__:
-            self.__getList__()
+        self.__url = url
+        self.__detectUrl()
+        if self.__isM3u8:
+            self.__getList()
         pass
 
     # 判断链接是否为m3u8文件，如果是则获取内层文件内容
-    def detectUrl(self):
+    def __detectUrl(self):
         """
         思路：获取链接内容，然后正则匹配是否包含 #EXTM3U
         如果包含则匹配 #EXTINF
         """
-        txt = WebUtil.getText(self.__url__)
+        txt = WebUtil.getText(self.__url)
         if txt == '':
-            self.__isM3u8__ = False
+            self.__isM3u8 = False
             return
         reg = r'^#EXTM3U'
         if re.search(reg, txt):
             # 匹配成功，是m3u8链接
-            self.__isM3u8__ = True
+            self.__isM3u8 = True
             reg = r'#EXTINF'
 
             # 判断是内层还是外层
             if re.search(reg, txt):
                 # 是内层链接
-                self.__innerUrl__ = self.__url__
-                self.__content__ = txt
-                self.__innerUrlPre__ = getPre(self.__innerUrl__)
+                self.__innerUrl = self.__url
+                self.__content = txt
+                self.__innerUrlPre = getPre(self.__innerUrl)
                 pass
             else:
                 # 是外层链接
                 # 取内层
-                self.__indexContent__ = txt
-                self.__urlPre__ = getPre(self.__url__)
-                self.__getInnerContent__()
+                self.__indexContent = txt
+                self.__urlPre = getPre(self.__url)
+                self.__getInnerContent()
                 pass
             pass
         else:
             # 不是m3u8链接
-            self.__isM3u8__ = False
+            self.__isM3u8 = False
             pass
         pass
 
-    def isM3u8(self):
-        return self.__isM3u8__
-
     # 获取内层文件内容
-    def __getInnerContent__(self):
+    def __getInnerContent(self):
         # 获取 xxk/hls/index.m3u8 ，一般在文件最后一行
-        lk = self.__indexContent__.split('\n')[-1:][0]
+        lk = self.__indexContent.split('\n')[-1:][0]
         # 拼接inner url
-        self.__innerUrl__ = self.__urlPre__ + lk
+        self.__innerUrl = self.__urlPre + lk
 
         # 获取链接内容
-        txt = WebUtil.getText(self.__innerUrl__)
+        txt = WebUtil.getText(self.__innerUrl)
         if txt == '':
-            self.__isM3u8__ = False
+            self.__isM3u8 = False
         else:
-            self.__content__ = txt
-            self.__isM3u8__ = True
+            self.__content = txt
+            self.__isM3u8 = True
         pass
 
     # 获取视频直链列表
-    def __getList__(self):
+    def __getList(self):
         """
         匹配类似下面的序列
         #EXTINF:1.000000,
         xxxxxxxxx.ts
         """
-        self.__innerUrlPre__ = getPre(self.__innerUrl__)
+        self.__innerUrlPre = getPre(self.__innerUrl)
 
         reg = r'#EXTINF:.*?\n(.*?\.ts)'
-        res = re.findall(reg, self.__content__)
-        self.__tsList__ = []
+        res = re.findall(reg, self.__content)
+        self.__tsList = []
         i = 0
         for item in res:
-            self.__tsList__.append({
+            self.__tsList.append({
                 'index': i,
                 'name': item,
-                'url': self.__innerUrlPre__ + item
+                'url': self.__innerUrlPre + item
             })
             i += 1
             pass
-        return self.__tsList__
+        return self.__tsList
+
+    def isM3u8(self):
+        return self.__isM3u8
 
     def getList(self):
-        return self.__tsList__
+        return self.__tsList
         pass
 
     def getTsLength(self):
-        return len(self.__tsList__)
+        return len(self.__tsList)
         pass
 
     pass
