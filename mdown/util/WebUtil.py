@@ -1,4 +1,5 @@
 import requests
+import R
 
 
 # 获取链接的文本内容，下载失败返回None
@@ -24,7 +25,7 @@ def getText(url: str, timeout: int = 5, retries: int = 3, show: bool = True):
             if i >= 1:
                 if show:
                     print('retry getting resource...', i)
-            text = requests.get(url, timeout=timeout).text
+            text = requests.get(url=url, timeout=timeout, headers=R.Static.HEADERS).text
             # if show:
             #     print('getting resource finished.')
             return text
