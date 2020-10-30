@@ -12,13 +12,9 @@ import re
 """
 
 
+# 获取链接的前缀
 def getPre(url: str):
     return url[0:url.rfind('/') + 1]
-
-
-if __name__ == '__main__':
-    print(getPre('https://meng.wuyou-zuida.com/20200227/26199_992e4909/index.m3u8'))
-    pass
 
 
 class M3u8:
@@ -29,12 +25,15 @@ class M3u8:
     __indexContent__ = ''  # 外层文件内容
     __content__ = ''  # 内层文件内容
     __tsList__ = []  # ts文件集合
+    __tsLength = 0
     __isM3u8__ = False  # 是否是m3u8链接
 
     # 构造
     def __init__(self, url):
         self.__url__ = url
         self.detectUrl()
+        if self.__isM3u8__:
+            self.__getList__()
         pass
 
     # 判断链接是否为m3u8文件，如果是则获取内层文件内容
@@ -94,7 +93,7 @@ class M3u8:
         pass
 
     # 获取视频直链列表
-    def getList(self):
+    def __getList__(self):
         """
         匹配类似下面的序列
         #EXTINF:1.000000,
@@ -105,8 +104,23 @@ class M3u8:
         reg = r'#EXTINF:.*?\n(.*?\.ts)'
         res = re.findall(reg, self.__content__)
         self.__tsList__ = []
+        i = 0
         for item in res:
-            self.__tsList__.append(self.__innerUrlPre__ + item)
+            self.__tsList__.append({
+                'index': i,
+                'name': item,
+                'url': self.__innerUrlPre__ + item
+            })
+            i += 1
+            pass
+        return self.__tsList__
+
+    def getList(self):
+        return self.__tsList__
+        pass
+
+    def getTsLength(self):
+        return len(self.__tsList__)
         pass
 
     pass
@@ -119,7 +133,7 @@ if __name__ == '__main__':
     m = M3u8('https://yuledy.helanzuida.com/20200402/1745_5f787176/index.m3u8')
     # m = M3u8('https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8')
     # m = M3u8('https://meng.wuyou-zuida.com/20200227/26199_992e4909/1000k/hls/index.m3u8')
-    # print(m.__content__)
 
-    m.getList()
+    print(m.getTsLength())
+    print(m.getList())
     pass
