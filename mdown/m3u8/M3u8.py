@@ -12,12 +12,23 @@ import re
 """
 
 
+def getPre(url: str):
+    return url[0:url.rfind('/') + 1]
+
+
+if __name__ == '__main__':
+    print(getPre('https://meng.wuyou-zuida.com/20200227/26199_992e4909/index.m3u8'))
+    pass
+
+
 class M3u8:
     __url__ = ''  # m3u8链接
-    __innerUrl__ = ''
-    __index_content__ = ''  # 外层文件内容
+    __urlPre__ = ''  # m3u8链接前缀
+    __innerUrl__ = ''  # 内层m3u8链接
+    __innerUrlPre__ = ''  # 内层m3u8链接前缀
+    __indexContent__ = ''  # 外层文件内容
     __content__ = ''  # 内层文件内容
-    __tsList__ = ''  # ts文件集合
+    __tsList__ = []  # ts文件集合
     __isM3u8__ = False  # 是否是m3u8链接
 
     # 构造
@@ -35,22 +46,31 @@ class M3u8:
         txt = WebUtil.getText(self.__url__)
         if txt == '':
             self.__isM3u8__ = False
-            return self.__isM3u8__
+            return
         reg = r'^#EXTM3U'
         if re.search(reg, txt):
             # 匹配成功，是m3u8链接
             self.__isM3u8__ = True
-            # 判断是内层还是外层
             reg = r'#EXTINF'
+
+            # 判断是内层还是外层
             if re.search(reg, txt):
-                # 成功，是内层链接
+                # 是内层链接
+                self.__innerUrl__ = self.__url__
                 self.__content__ = txt
+                self.__innerUrlPre__ = getPre(self.__innerUrl__)
                 pass
             else:
-                # 获取内层内容
-                self.__index_content__ = txt
+                # 是外层链接
+                # 取内层
+                self.__indexContent__ = txt
+                self.__urlPre__ = getPre(self.__url__)
                 self.__getInnerContent__()
                 pass
+            pass
+        else:
+            # 不是m3u8链接
+            self.__isM3u8__ = False
             pass
         pass
 
@@ -59,19 +79,13 @@ class M3u8:
 
     # 获取内层文件内容
     def __getInnerContent__(self):
-        """
-        内层链接为 自己的链接 拼接 xxk/hls/index.m3u8
-        """
-        self.__content__ = ''
-        # 获取自己的链接
-        reg = '^(.*?)index.m3u8'
-        u = re.findall(reg, self.__url__)[0]
         # 获取 xxk/hls/index.m3u8 ，一般在文件最后一行
-        lk = self.__index_content__.split('\n')[-1:][0]
-        url = u + lk
+        lk = self.__indexContent__.split('\n')[-1:][0]
+        # 拼接inner url
+        self.__innerUrl__ = self.__urlPre__ + lk
 
         # 获取链接内容
-        txt = WebUtil.getText(url)
+        txt = WebUtil.getText(self.__innerUrl__)
         if txt == '':
             self.__isM3u8__ = False
         else:
@@ -81,15 +95,18 @@ class M3u8:
 
     # 获取视频直链列表
     def getList(self):
+        """
+        匹配类似下面的序列
+        #EXTINF:1.000000,
+        xxxxxxxxx.ts
+        """
+        self.__innerUrlPre__ = getPre(self.__innerUrl__)
 
-        """
-        匹配下面的序列
-        #EXTINF:7.960000,
-        d2af79ce06c000000.ts
-        """
         reg = r'#EXTINF:.*?\n(.*?\.ts)'
         res = re.findall(reg, self.__content__)
-        print(res)
+        self.__tsList__ = []
+        for item in res:
+            self.__tsList__.append(self.__innerUrlPre__ + item)
         pass
 
     pass
@@ -97,7 +114,12 @@ class M3u8:
 
 if __name__ == '__main__':
     # m = M3u8('https://meng.wuyou-zuida.com/20200227/26199_992e4909/index.m3u8')
-    m = M3u8('https://meng.wuyou-zuida.com/20200227/26199_992e4909/1000k/hls/index.m3u8')
+    # m = M3u8('https://douban.donghongzuida.com/20200918/9893_7cec614e/index.m3u8')
+    # m = M3u8('https://xigua-cdn.haima-zuida.com/20200625/8575_d71b372e/index.m3u8')
+    m = M3u8('https://yuledy.helanzuida.com/20200402/1745_5f787176/index.m3u8')
+    # m = M3u8('https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8')
+    # m = M3u8('https://meng.wuyou-zuida.com/20200227/26199_992e4909/1000k/hls/index.m3u8')
     # print(m.__content__)
+
     m.getList()
     pass
