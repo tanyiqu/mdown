@@ -10,7 +10,10 @@ class string:
     # 版本号
     VERSION = '1.0.0'
 
+    # 描述
+    DESC = 'A fast and simple m3u8 video downloader built with Python.'
+
     # 版本全名
-    VERSION_NAME = 'mdown: version %s, A fast and simple m3u8 video downloader built with Python.' % VERSION
+    VERSION_NAME = 'mdown: version %s' % VERSION
 
     pass
