@@ -26,6 +26,7 @@ class M3u8:
     __content = ''  # 内层文件内容
     __tsList = []  # ts文件集合
     __tsLength = 0
+    __duration = 0.0
     __isM3u8 = False  # 是否是m3u8链接
 
     # 构造
@@ -98,16 +99,19 @@ class M3u8:
         """
         self.__innerUrlPre = getPre(self.__innerUrl)
 
-        reg = r'#EXTINF:.*?\n(.*?\.ts)'
+        reg = r'#EXTINF:(.*?),\n(.*?\.ts)'
         res = re.findall(reg, self.__content)
         self.__tsList = []
         i = 0
         for item in res:
+            duration = float(item[0])
             self.__tsList.append({
                 'index': i,
-                'name': item,
-                'url': self.__innerUrlPre + item
+                'name': item[1],
+                'duration': duration,
+                'url': self.__innerUrlPre + item[1]
             })
+            self.__duration += duration
             i += 1
             pass
         return self.__tsList
@@ -123,17 +127,36 @@ class M3u8:
         return len(self.__tsList)
         pass
 
+    def getDurationSecond(self):
+        return int(self.__duration)
+
+    def getDuration(self):
+        d = self.__duration
+        # 计算秒数
+        s = d % 60
+        # 持续时长 - 秒数
+        d -= s
+        # 计算分钟数
+        minute = d / 60
+        # 计算小时数
+        h = minute / 60
+        # 计算小于60的分钟数
+        minute %= 60
+        return "%02d:%02d:%02d" % (h, minute, s)
+
     pass
 
 
 if __name__ == '__main__':
     # m = M3u8('https://meng.wuyou-zuida.com/20200227/26199_992e4909/index.m3u8')
+    m = M3u8('https://leshi.cdn-zuyida.com/20170604/L9pBumBj/index.m3u8')
     # m = M3u8('https://douban.donghongzuida.com/20200918/9893_7cec614e/index.m3u8')
     # m = M3u8('https://xigua-cdn.haima-zuida.com/20200625/8575_d71b372e/index.m3u8')
-    m = M3u8('https://yuledy.helanzuida.com/20200402/1745_5f787176/index.m3u8')
+    # m = M3u8('https://yuledy.helanzuida.com/20200402/1745_5f787176/index.m3u8')
     # m = M3u8('https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8')
     # m = M3u8('https://meng.wuyou-zuida.com/20200227/26199_992e4909/1000k/hls/index.m3u8')
 
     print(m.getTsLength())
     print(m.getList())
+    print(m.getDuration())
     pass
