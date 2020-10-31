@@ -14,7 +14,7 @@ class M3u8Downloader:
         pass
 
     def download(self):
-        print('下载 + %s' % len(self.__list))
+        # print('下载 + %s' % len(self.__list))
         pass
 
     pass

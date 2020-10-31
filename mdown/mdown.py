@@ -26,8 +26,6 @@ def main():
 
     url = args.url[0]
 
-
-
     # ------------------------
     # print(args)
     # print(url)
@@ -38,8 +36,22 @@ def main():
         print('error: "%s" is not a correct url' % url)
         return
 
+    print()
+    print('downloading with mdown...')
+    print('url : ' + url)
+    print()
     # 构造M3u8
+    print('parsing m3u8...')
     m3u8 = M3u8(url)
+
+    if not m3u8.isM3u8():
+        print('error: "%s" is not a correct url' % url)
+        pass
+
+    print()
+    print('parsing succeed')
+    print('Length:\t\t%s' % m3u8.getTsLength())
+    print('Duration:\t%s' % m3u8.getDuration())
 
     # 构造M3u8Downloader
     downloader = M3u8Downloader(m3u8.getList())
