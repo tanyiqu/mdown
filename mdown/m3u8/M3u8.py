@@ -18,16 +18,16 @@ def getPre(url: str):
 
 
 class M3u8:
-    __url = ''  # m3u8链接
-    __urlPre = ''  # m3u8链接前缀
-    __innerUrl = ''  # 内层m3u8链接
-    __innerUrlPre = ''  # 内层m3u8链接前缀
-    __indexContent = ''  # 外层文件内容
-    __content = ''  # 内层文件内容
-    __tsList = []  # ts文件集合
-    __tsLength = 0
-    __duration = 0.0
-    __isM3u8 = False  # 是否是m3u8链接
+    __url = ''              # m3u8链接
+    __urlPre = ''           # m3u8链接前缀
+    __innerUrl = ''         # 内层m3u8链接
+    __innerUrlPre = ''      # 内层m3u8链接前缀
+    __indexContent = ''     # 外层文件内容
+    __content = ''          # 内层文件内容
+    __tsList = []           # ts文件集合
+    __tsLength = 0          # ts文件个数
+    __duration = 0.0        # 视频的时长
+    __isM3u8 = False        # 是否是m3u8链接
 
     # 构造
     def __init__(self, url):
