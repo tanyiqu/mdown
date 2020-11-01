@@ -4,6 +4,8 @@ import argparse
 import util.TextUrl as TextUrl
 from util.DownloadUtil import M3u8Downloader
 from m3u8.M3u8 import M3u8
+import threading
+import time
 
 parser = argparse.ArgumentParser(description=R.string.DESC)
 parser.add_argument("url", nargs="*", help="url of m3u8 video, default argument, required")
@@ -45,8 +47,8 @@ def analyseArgs(args):
         pass
 
     # 线程数
-    if not 0 < dit['thread'] < 33:
-        print('error: the number of threads must be greater than 0 and less than or equal to 32')
+    if not 0 < dit['thread'] < 129:
+        print('error: the number of threads must be greater than 0 and less than or equal to 128')
         return None
 
     return dit

@@ -17,6 +17,7 @@ class M3u8Downloader:
     __length = 0
     __downloader = None
     __workers = 0
+    __flag = []
 
     def __init__(self, __list: list, __path: str, __filename: str, __workers: int):
         self.__list = __list
@@ -33,25 +34,25 @@ class M3u8Downloader:
         os.mkdir(self.__tmpPath)
 
         def _download(dit):
-            downloader = Downloader(dit['url'], self.__tmpPath, dit['name'])
+            """
+            dit:{
+                index
+                name
+                duration
+                url
+            }
+            """
+            downloader = Downloader(dit['url'], self.__tmpPath, dit['name'], dit['index'])
             downloader.download()
             pass
 
-        pool = threadpool.ThreadPool(128)
-
+        # 线程池
+        pool = threadpool.ThreadPool(self.__workers)
         reqs = threadpool.makeRequests(_download, self.__list)
-
         for req in reqs:
             pool.putRequest(req)
             pass
-
         pool.wait()
-
-        # for i in range(30):
-        # downloader = Downloader(self.__list[i]['url'], self.__tmpPath, self.__list[i]['name'])
-        # thread = threading.Thread(target=downloader.download)
-        # thread.start()
-        # pass
 
         pass
 
@@ -60,37 +61,40 @@ class M3u8Downloader:
 
 class Downloader:
     """
-    下载小文件的 工具类
+    下载ts文件的 工具类
     """
     __filename = ''
     __url = ''
     __path = ''
+    __num = 0
 
     # 构造
-    def __init__(self, __url: str, __path: str, __filename: str):
+    def __init__(self, __url: str, __path: str, __filename: str, __num: int):
         self.__url = __url
         self.__path = __path
         self.__filename = __filename
+        self.__num = __num
         pass
 
     def download(self):
-        duration = time.time()
-        resp = requests.get(self.__url, stream=True)
-        duration = time.time() - duration
+        # 边写边下方式
+        # duration = time.time()
+        # resp = requests.get(self.__url, stream=True)
+        # duration = time.time() - duration
+        #
+        # with open(self.__path + '/' + self.__filename, "wb") as f:
+        #     for data in resp.iter_content(1024):
+        #         f.write(data)
+        #     pass
 
+        # 下完再写方式
+        resp = requests.get(self.__url)
         with open(self.__path + '/' + self.__filename, "wb") as f:
-            for data in resp.iter_content(1024):
-                f.write(data)
+            f.write(resp.content)
             pass
-
-        # length = int(resp.headers['Content-Length']) / (1024 ** 2)
-        # speed = length / duration
-        # return {
-        #     'length': length,
-        #     'duration': duration,
-        #     'speed': speed
-        # }
-
+        #
+        print('%s is ok' % self.__num)
+        #
         pass
 
     pass
