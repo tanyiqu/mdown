@@ -76,7 +76,10 @@ def main():
     # 开始
     print()
     print('downloading with mdown...')
-    print('url : ' + args['url'])
+    print('%s%-16s%s' % ('    ', 'Url:', args['url']))
+    print('%s%-16s%s' % ('    ', 'Thread:', args['thread']))
+    print('%s%-16s%s' % ('    ', 'Name:', args['name']))
+    print('%s%-16s%s' % ('    ', 'Path:', args['path']))
     print()
 
     # 构造M3u8
