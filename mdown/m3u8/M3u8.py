@@ -1,4 +1,5 @@
 import util.WebUtil as WebUtil
+import util.TextUrl as TextUrl
 import re
 
 """
@@ -18,16 +19,17 @@ def getPre(url: str):
 
 
 class M3u8:
-    __url = ''              # m3u8链接
-    __urlPre = ''           # m3u8链接前缀
-    __innerUrl = ''         # 内层m3u8链接
-    __innerUrlPre = ''      # 内层m3u8链接前缀
-    __indexContent = ''     # 外层文件内容
-    __content = ''          # 内层文件内容
-    __tsList = []           # ts文件集合
-    __tsLength = 0          # ts文件个数
-    __duration = 0.0        # 视频的时长
-    __isM3u8 = False        # 是否是m3u8链接
+    __url = ''                  # m3u8链接
+    __urlPre = ''               # m3u8链接前缀
+    __innerUrl = ''             # 内层m3u8链接
+    __innerUrlPre = ''          # 内层m3u8链接前缀
+    __indexContent = ''         # 外层文件内容
+    __content = ''              # 内层文件内容
+    __tsList = []               # ts文件集合
+    __tsLength = 0              # ts文件个数
+    __durationSec = 0.0         # 视频的时长(秒)
+    __duration = '00:00:00'     # 视频的时长(hh:mm:ss)
+    __isM3u8 = False            # 是否是m3u8链接
 
     # 构造
     def __init__(self, url):
@@ -111,9 +113,12 @@ class M3u8:
                 'duration': duration,
                 'url': self.__innerUrlPre + item[1]
             })
-            self.__duration += duration
+            # 依次相加时长
+            self.__durationSec += duration
             i += 1
             pass
+        # 计算时长
+        self.__duration = TextUrl.formatTime(self.getDurationSecond())
         return self.__tsList
 
     def isM3u8(self):
@@ -128,21 +133,10 @@ class M3u8:
         pass
 
     def getDurationSecond(self):
-        return int(self.__duration)
+        return int(self.__durationSec)
 
     def getDuration(self):
-        d = self.__duration
-        # 计算秒数
-        s = d % 60
-        # 持续时长 - 秒数
-        d -= s
-        # 计算分钟数
-        minute = d / 60
-        # 计算小时数
-        h = minute / 60
-        # 计算小于60的分钟数
-        minute %= 60
-        return "%02d:%02d:%02d" % (h, minute, s)
+        return self.__duration
 
     pass
 
