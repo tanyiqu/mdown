@@ -46,7 +46,7 @@ class M3u8Downloader:
                 url
             }
             """
-            downloader = TsDownloader(dit['url'], self.__tmpPath, dit['name'], dit['index'])
+            downloader = TsDownloader(dit['url'], self.__tmpPath, dit['index'])
             downloader.download()
             pass
 
@@ -67,25 +67,27 @@ class TsDownloader:
     下载ts文件的下载器
     """
 
-    def __init__(self, url, path, filename, num, timeout=5):
+    def __init__(self, url: str, path: str, num: int, timeout: int = 5, noSuffix: bool = True):
         self.url = url
         self.path = path
-        self.filename = filename
         self.num = num
         self.timeout = timeout
+        self.noSuffix = noSuffix
+        self.filename = str(num)
+        if not self.noSuffix:
+            self.filename += '.ts'
         pass
 
     def download(self):
         # 两种方式
-
-        # # 边下边写
+        # 1.边下边写
         # resp = requests.get(url=self.url, timeout=self.timeout)
         # with open(self.path + '/' + self.filename, "wb") as f:
         #     for data in resp.iter_content(1024):
         #         f.write(data)
         #     pass
 
-        # # 下完再写
+        # 2.下完再写
         # resp = requests.get(url=self.url, timeout=self.timeout)
         # with open(self.path + '/' + self.filename, "wb") as f:
         #     f.write(resp.content)
