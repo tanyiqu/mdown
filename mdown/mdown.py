@@ -68,11 +68,6 @@ def main():
     if args is None:
         return
 
-    # ------------------------
-    # print(args)
-    # print(url)
-    # ------------------------
-
     # 开始
     print()
     print('downloading with mdown...')
