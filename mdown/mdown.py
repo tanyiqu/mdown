@@ -15,7 +15,7 @@ parser.add_argument('-v', '--version', action='version', version=R.string.VERSIO
 parser.add_argument('-u', '--url', metavar='', help='to specify m3u8 video url')
 parser.add_argument('-n', '--name', metavar='', help='name of file')
 parser.add_argument('-t', '--thread', metavar='', type=int, help='threads of download progress', default=16)
-parser.add_argument('-C', metavar='', help='absolute path of file')
+parser.add_argument('-o', '--output', metavar='', help='output path of file')
 
 
 # 检测传入的参数，返回字典形式的参数列表，如果有检测失败的则返回None
@@ -24,7 +24,7 @@ def analyseArgs(args):
         'url': args.url[0],
         'name': args.name,
         'thread': args.thread,
-        'path': args.C
+        'path': args.output
     }
 
     # 简单判断一下url
