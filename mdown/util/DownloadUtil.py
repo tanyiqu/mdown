@@ -13,47 +13,6 @@ import threadpool
 #     pass
 
 
-class TsDownloader:
-    """
-    下载ts文件的下载器
-    """
-
-    path = 'path'
-    __path = '__path'
-
-    def __init__(self):
-        pass
-
-    def print(self):
-        print(self.path)
-        print(self.__path)
-        print(TsDownloader.path)
-        print(TsDownloader.__path)
-        pass
-
-    def set(self):
-        self.path = 'p'
-        self.__path = '__p'
-        pass
-
-    # def __init__(self, url, path, name):
-    #     # self.__url = url
-    #     # self.__path = path
-    #     # self.__name = name
-    #     pass
-
-    pass
-
-
-if __name__ == '__main__':
-    ts = TsDownloader()
-    ts.print()
-    ts.set()
-    ts.print()
-
-    pass
-
-
 class M3u8Downloader:
     __list = []
     __filename = ''
@@ -87,7 +46,7 @@ class M3u8Downloader:
                 url
             }
             """
-            downloader = Downloader(dit['url'], self.__tmpPath, dit['name'], dit['index'])
+            downloader = TsDownloader(dit['url'], self.__tmpPath, dit['name'], dit['index'])
             downloader.download()
             pass
 
@@ -98,72 +57,67 @@ class M3u8Downloader:
             pool.putRequest(req)
             pass
         pool.wait()
-
         pass
 
     pass
 
 
-class Downloader:
+class TsDownloader:
     """
-    下载ts文件的 工具类
+    下载ts文件的下载器
     """
-    __filename = ''
-    __url = ''
-    __path = ''
-    __num = 0
 
-    # 构造
-    def __init__(self, __url: str, __path: str, __filename: str, __num: int):
-        self.__url = __url
-        self.__path = __path
-        self.__filename = __filename
-        self.__num = __num
+    def __init__(self, url, path, filename, num, timeout=5):
+        self.url = url
+        self.path = path
+        self.filename = filename
+        self.num = num
+        self.timeout = timeout
         pass
 
     def download(self):
-        # 边写边下方式
-        # duration = time.time()
-        # resp = requests.get(self.__url, stream=True)
-        # duration = time.time() - duration
-        #
-        # with open(self.__path + '/' + self.__filename, "wb") as f:
+        # 两种方式
+
+        # # 边下边写
+        # resp = requests.get(url=self.url, timeout=self.timeout)
+        # with open(self.path + '/' + self.filename, "wb") as f:
         #     for data in resp.iter_content(1024):
         #         f.write(data)
         #     pass
 
-        # 下完再写方式
-        # resp = requests.get(self.__url)
-        # with open(self.__path + '/' + self.__filename, "wb") as f:
+        # # 下完再写
+        # resp = requests.get(url=self.url, timeout=self.timeout)
+        # with open(self.path + '/' + self.filename, "wb") as f:
         #     f.write(resp.content)
         #     pass
-        # #
-        # print('%s is ok' % self.__num)
-        #
+
         i = 0
         # 如果请求失败就重新请求，直至请求成功
         while True:
             try:
-                resp = requests.get(url=self.__url, timeout=5)
-                with open(self.__path + '/' + self.__filename, "wb") as f:
-                    f.write(resp.content)
+                resp = requests.get(url=self.url, timeout=self.timeout)
+                with open(self.path + '/' + self.filename, "wb") as f:
+                    for data in resp.iter_content(1024):
+                        f.write(data)
                     pass
-                print('%s is ok' % self.__num)
+                print('%s is ok' % self.num)
                 break
                 pass
             except requests.exceptions.RequestException:
                 i += 1
-                print('%s retry %d' % (self.__num, i))
+                print('%s retry %d' % (self.num, i))
                 pass
             pass
+        pass
         pass
 
     pass
 
-# if __name__ == '__main__':
-#     d = Download('https://yuledy.helanzuida.com/20200402/1745_5f787176/1000k/hls/964e77c2ad0000033.ts',
-#                  # d = Download('https://mirrors.tuna.tsinghua.edu.cn/qt/archive/qt/5.12/5.12.8/qt-opensource-linux-x64-5.12.8.run',
-#                  'C:/Users/Tanyiqu/Desktop/测试打包',
-#                  '4555.ts')
-#     print(d.download())
-#     pass
+
+if __name__ == '__main__':
+    ts = TsDownloader()
+    ts.print()
+    ts.set()
+    ts.print()
+
+    pass
