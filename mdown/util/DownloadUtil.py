@@ -70,17 +70,19 @@ class M3u8Downloader:
         pass
 
     def _calcProgress(self):
-        p = '%d / %d\r' % (self.completeNum, self.tsLength)
-        print(p)
+        # p = '\r%d / %d' % (self.completeNum, self.tsLength)
+        p = '\r%.2lf %%' % (100.00 * (self.completeNum / self.tsLength))
+        print(p, end="")
         pass
 
     def showProgress(self):
         while not self.isFinished():
             self._calcProgress()
-            time.sleep(1)
+            time.sleep(0.2)
             pass
         else:
             self._calcProgress()
+            print()
             pass
         pass
 
