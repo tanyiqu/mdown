@@ -19,14 +19,31 @@ class M3u8Downloader:
         self.tsList = tsList
         self.path = path
         self.filename = filename
-        self.outPath = ('%s\\%s' % (self.path, self.filename)).replace('\\', '/')
-        self.tmpPath = (self.path + '\\.' + self.filename).replace('\\', '/')
         self.maxWorkers = maxWorkers
+
+        # 文件输出路径
+        self.outPath = ('%s\\%s' % (self.path, self.filename)).replace('\\', '/')
+
+        # 临时文件存放路径
+        self.tmpPath = (self.path + '\\.' + self.filename).replace('\\', '/')
+
+        # ts序列长度
         self.tsLength = len(self.tsList)
 
+        # 下载开始、结束时间
         self.startTime = 0
         self.endTime = 0
 
+        # 锁
+        self.lock = threading.Lock()
+
+        # ts完成数
+        self.completeNum = 0
+
+        pass
+
+    def isFinished(self):
+        return self.completeNum == self.tsLength
         pass
 
     def download(self):
@@ -43,13 +60,28 @@ class M3u8Downloader:
             pass
 
         # 显示进度
-
+        self.showProgress()
         #
 
         executor.shutdown()
         self.endTime = time.time()
         print('download complete, took %s' % TextUtil.formatTime(self.endTime - self.startTime))
         self.merge()
+        pass
+
+    def _calcProgress(self):
+        p = '%d / %d\r' % (self.completeNum, self.tsLength)
+        print(p)
+        pass
+
+    def showProgress(self):
+        while not self.isFinished():
+            self._calcProgress()
+            time.sleep(1)
+            pass
+        else:
+            self._calcProgress()
+            pass
         pass
 
     # 在线程中被调用的任务
@@ -62,7 +94,7 @@ class M3u8Downloader:
             url
         }
         """
-        downloader = TsDownloader(arg['url'], self.tmpPath, arg['index'])
+        downloader = TsDownloader(arg['url'], self.tmpPath, arg['index'], self)
         downloader.download()
         pass
 
@@ -92,10 +124,12 @@ class TsDownloader:
     下载ts文件的下载器
     """
 
-    def __init__(self, url: str, path: str, num: int, timeout: int = 5, noSuffix: bool = True):
+    def __init__(self, url: str, path: str, num: int, parentDownloader: M3u8Downloader, timeout: int = 5,
+                 noSuffix: bool = True):
         self.url = url
         self.path = path
         self.num = num
+        self.parentDownloader = parentDownloader
         self.timeout = timeout
         self.noSuffix = noSuffix
         self.filename = str(num)
@@ -127,12 +161,15 @@ class TsDownloader:
                     for data in resp.iter_content(1024):
                         f.write(data)
                     pass
-                print('%s is ok' % self.num)
+                # print('%s is ok' % self.num)
+                self.parentDownloader.lock.acquire()
+                self.parentDownloader.completeNum += 1
+                self.parentDownloader.lock.release()
                 break
                 pass
             except requests.exceptions.RequestException:
                 i += 1
-                print('%s retry %d' % (self.num, i))
+                # print('%s retry %d' % (self.num, i))
                 pass
             pass
         pass
