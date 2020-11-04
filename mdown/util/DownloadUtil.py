@@ -90,16 +90,39 @@ class M3u8Downloader:
         return '[%d / %d]' % (self.completeNum, self.tsLength)
         pass
 
+    # 进度条
+    def __getProgress(self):
+        # [=========>                                        ]
+        # 满进度为100，换算当前进度
+        progress = int((self.completeNum / self.tsLength) * 100)
+        num_1 = 0
+        num_2 = 0
+        num_3 = 0
+        # 计算 = 的个数 ，> 的个数 和 空格的个数
+        # 如果progress为偶数，= 为 progress/2，> 为 0，空格为 50减 =的个数
+        # 如果progress为奇数，= 为 (progress-1)/2，> 为 1，空格为 50减(=的个数)-1
+        if progress % 2 == 0:
+            num_1 = progress // 2
+            num_2 = 0
+            num_3 = 50 - num_1
+            pass
+        else:
+            num_1 = (progress - 1) // 2
+            num_2 = 1
+            num_3 = 50 - num_1 - num_2
+            pass
+        bar = '[' + '=' * num_1 + '>' * num_2 + ' ' * num_3 + ']'
+        return bar
+        pass
+
     def showProgress(self):
+        print('note: speed display may not be accurate.')
         while not self.isFinished():
-            print(' ' * 100, end="")
-            p = '\r%s %s %s %s' % (
-                self.__getCurrProgress(),
-                self.__getCurrPercentage(),
-                self.__getCurrDuration(),
-                self.__getCurrSpeed()
-            )
-            print(p, end="")
+            print('\r' + ' ' * 120, end='')
+            print('\r%s %s %s %s %s' % (
+                self.__getCurrProgress(), self.__getProgress(), self.__getCurrPercentage(), self.__getCurrSpeed(),
+                self.__getCurrDuration()
+            ), end='')
             # 当前时间间隔内的流量清零
             self.lock.acquire()
             self.dataPerInterval = 0
@@ -107,11 +130,9 @@ class M3u8Downloader:
             time.sleep(self.interval)
             pass
         else:
-            print('\r%s %s %s %s' % (
-                self.__getCurrProgress(),
-                self.__getCurrPercentage(),
-                self.__getCurrDuration(),
-                self.__getCurrSpeed()
+            print('\r%s %s %s %s %s' % (
+                self.__getCurrProgress(), self.__getProgress(), self.__getCurrPercentage(), self.__getCurrSpeed(),
+                self.__getCurrDuration()
             ))
             pass
         pass

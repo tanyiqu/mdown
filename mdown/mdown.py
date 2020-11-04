@@ -94,7 +94,7 @@ def main():
     print()
 
     # 构造M3u8Downloader
-    downloader = M3u8Downloader(m3u8.getList(), args['path'], args['name'], args['thread'])
+    downloader = M3u8Downloader(m3u8.getList(), args['path'], args['name'], args['thread'], interval=0.2)
     print('downloading...')
     downloader.download()
 
