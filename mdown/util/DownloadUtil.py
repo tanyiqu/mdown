@@ -6,10 +6,11 @@ import requests
 import time
 import os
 import threading
-import threadpool
+from concurrent.futures import ThreadPoolExecutor
 
 
 # class M3u8Downloader:
+#
 #     pass
 
 
@@ -50,13 +51,12 @@ class M3u8Downloader:
             downloader.download()
             pass
 
-        # 线程池
-        pool = threadpool.ThreadPool(self.__workers)
-        reqs = threadpool.makeRequests(_download, self.__list)
-        for req in reqs:
-            pool.putRequest(req)
+        executor = ThreadPoolExecutor(max_workers=self.__workers)
+        for tmp in self.__list:
+            executor.submit(_download, tmp)
             pass
-        pool.wait()
+        executor.shutdown(wait=False)
+        print('do')
         pass
 
     pass
