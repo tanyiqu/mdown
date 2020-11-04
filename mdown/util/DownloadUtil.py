@@ -15,11 +15,14 @@ class M3u8Downloader:
     m3u8视频下载器
     """
 
-    def __init__(self, tsList: list, path: str, filename: str, maxWorkers: int):
+    def __init__(self, tsList: list, path: str, filename: str, maxWorkers: int, interval: float = 0.5):
         self.tsList = tsList
         self.path = path
         self.filename = filename
         self.maxWorkers = maxWorkers
+        self.interval = interval  # 计时器停顿时间间隔
+
+        self.dataPerInterval = 0  # 每一个时间间隔所下载的流量
 
         # 文件输出路径
         self.outPath = ('%s\\%s' % (self.path, self.filename)).replace('\\', '/')
@@ -42,10 +45,6 @@ class M3u8Downloader:
 
         pass
 
-    def isFinished(self):
-        return self.completeNum == self.tsLength
-        pass
-
     def download(self):
         print('output: [' + self.outPath + ']')
         self.startTime = time.time()
@@ -61,7 +60,6 @@ class M3u8Downloader:
 
         # 显示进度
         self.showProgress()
-        #
 
         executor.shutdown()
         self.endTime = time.time()
@@ -69,20 +67,52 @@ class M3u8Downloader:
         self.merge()
         pass
 
-    def _calcProgress(self):
-        # p = '\r%d / %d' % (self.completeNum, self.tsLength)
-        p = '\r%.2lf %%' % (100.00 * (self.completeNum / self.tsLength))
-        print(p, end="")
+    def isFinished(self):
+        return self.completeNum == self.tsLength
+        pass
+
+    # 获取当前下载持续时长  00:01:23
+    def __getCurrDuration(self):
+        return TextUtil.formatTime(time.time() - self.startTime)
+        pass
+
+    # 获取当前下载百分比  12.34%
+    def __getCurrPercentage(self):
+        return '%.2lf%%' % (100.00 * (self.completeNum / self.tsLength))
+
+    # 获取 上一个时间间隔的 平均网速 1.25MB/s
+    def __getCurrSpeed(self):
+        return TextUtil.byte2MB(int(self.dataPerInterval / self.interval)) + 'MB/s'
+        pass
+
+    # 获取当前完成任务数进度 [28 / 251]
+    def __getCurrProgress(self):
+        return '[%d / %d]' % (self.completeNum, self.tsLength)
         pass
 
     def showProgress(self):
         while not self.isFinished():
-            self._calcProgress()
-            time.sleep(0.2)
+            print(' ' * 100, end="")
+            p = '\r%s %s %s %s' % (
+                self.__getCurrProgress(),
+                self.__getCurrPercentage(),
+                self.__getCurrDuration(),
+                self.__getCurrSpeed()
+            )
+            print(p, end="")
+            # 当前时间间隔内的流量清零
+            self.lock.acquire()
+            self.dataPerInterval = 0
+            self.lock.release()
+            time.sleep(self.interval)
             pass
         else:
-            self._calcProgress()
-            print()
+            print('\r%s %s %s %s' % (
+                self.__getCurrProgress(),
+                self.__getCurrPercentage(),
+                self.__getCurrDuration(),
+                self.__getCurrSpeed()
+            ))
             pass
         pass
 
@@ -161,6 +191,9 @@ class TsDownloader:
                 resp = requests.get(url=self.url, timeout=self.timeout)
                 with open(self.path + '/' + self.filename, "wb") as f:
                     for data in resp.iter_content(1024):
+                        self.parentDownloader.lock.acquire()
+                        self.parentDownloader.dataPerInterval += len(data)
+                        self.parentDownloader.lock.release()
                         f.write(data)
                     pass
                 # print('%s is ok' % self.num)

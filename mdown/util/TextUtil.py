@@ -4,7 +4,7 @@
 from pathlib import Path
 
 
-# 秒数转 hh:mm:ss 格式
+# 秒数 转 hh:mm:ss 格式
 def formatTime(sec: int):
     d = sec
     # 计算秒数
@@ -18,6 +18,12 @@ def formatTime(sec: int):
     # 计算小于60的分钟数
     minute %= 60
     return "%02d:%02d:%02d" % (h, minute, s)
+    pass
+
+
+# 字节数 转 XX.XX MB
+def byte2MB(byte: int):
+    return '%.2lf' % (byte / 1024 / 1024)
     pass
 
 
