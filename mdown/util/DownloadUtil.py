@@ -9,54 +9,52 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 
 
-# class M3u8Downloader:
-#
-#     pass
-
-
 class M3u8Downloader:
-    __list = []
-    __filename = ''
-    __path = ''
-    __tmpPath = ''
-    __length = 0
-    __downloader = None
-    __workers = 0
-    __flag = []
+    """
+    m3u8视频下载器
+    """
 
-    def __init__(self, __list: list, __path: str, __filename: str, __workers: int):
-        self.__list = __list
-        self.__path = __path
-        self.__filename = __filename
-        self.__workers = __workers
-        self.__length = len(self.__list)
+    def __init__(self, tsList: list, path: str, filename: str, maxWorkers: int):
+        self.tsList = tsList
+        self.path = path
+        self.filename = filename
+        self.tmpPath = self.path + '\\.' + self.filename
+        self.maxWorkers = maxWorkers
+        self.tsLength = len(self.tsList)
         pass
 
     def download(self):
-        print('path: [%s] name: [%s]' % (self.__filename, self.__path))
+        print('output: [%s\\%s]' % (self.path, self.filename))
+
         # 在路径里创建临时文件夹
-        self.__tmpPath = self.__path + '\\.' + self.__filename
-        os.mkdir(self.__tmpPath)
+        os.mkdir(self.tmpPath)
 
-        def _download(dit):
-            """
-            dit:{
-                index
-                name
-                duration
-                url
-            }
-            """
-            downloader = TsDownloader(dit['url'], self.__tmpPath, dit['index'])
-            downloader.download()
+        # 开启线程池进行下载
+        executor = ThreadPoolExecutor(max_workers=self.maxWorkers)
+        for tmp in self.tsList:
+            executor.submit(self._download, tmp)
             pass
 
-        executor = ThreadPoolExecutor(max_workers=self.__workers)
-        for tmp in self.__list:
-            executor.submit(_download, tmp)
-            pass
-        executor.shutdown(wait=False)
-        print('do')
+        # 显示进度
+
+        executor.shutdown(wait=True)
+        print('download finished')
+        pass
+
+        pass
+
+    # 在线程中被调用的任务
+    def _download(self, arg):
+        """
+        arg:{
+            index
+            name
+            duration
+            url
+        }
+        """
+        downloader = TsDownloader(arg['url'], self.tmpPath, arg['index'])
+        downloader.download()
         pass
 
     pass
