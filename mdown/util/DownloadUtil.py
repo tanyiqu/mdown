@@ -7,6 +7,7 @@ import time
 import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
+import util.TextUtil as TextUtil
 
 
 class M3u8Downloader:
@@ -18,13 +19,19 @@ class M3u8Downloader:
         self.tsList = tsList
         self.path = path
         self.filename = filename
-        self.tmpPath = self.path + '\\.' + self.filename
+        self.outPath = ('%s\\%s' % (self.path, self.filename)).replace('\\', '/')
+        self.tmpPath = (self.path + '\\.' + self.filename).replace('\\', '/')
         self.maxWorkers = maxWorkers
         self.tsLength = len(self.tsList)
+
+        self.startTime = 0
+        self.endTime = 0
+
         pass
 
     def download(self):
-        print('output: [%s\\%s]' % (self.path, self.filename))
+        print('output: [' + self.outPath + ']')
+        self.startTime = time.time()
 
         # 在路径里创建临时文件夹
         os.mkdir(self.tmpPath)
@@ -37,10 +44,12 @@ class M3u8Downloader:
 
         # 显示进度
 
-        executor.shutdown(wait=True)
-        print('download finished')
-        pass
+        #
 
+        executor.shutdown()
+        self.endTime = time.time()
+        print('download complete, took %s' % TextUtil.formatTime(self.endTime - self.startTime))
+        self.merge()
         pass
 
     # 在线程中被调用的任务
@@ -55,6 +64,24 @@ class M3u8Downloader:
         """
         downloader = TsDownloader(arg['url'], self.tmpPath, arg['index'])
         downloader.download()
+        pass
+
+    # 合并成ts文件
+    def merge(self):
+        # 目录： self.tmpPath
+        # 目标路径： self.outPath
+        print('merging...')
+
+        file = open(self.outPath, 'wb+')
+        for i in range(self.tsLength):
+            tsPath = '%s\\%s' % (self.tmpPath, i)
+            with open(tsPath, 'rb') as f:
+                file.write(f.read())
+                pass
+            pass
+        file.close()
+
+        print('merging finished')
         pass
 
     pass
@@ -113,11 +140,8 @@ class TsDownloader:
 
     pass
 
-
-if __name__ == '__main__':
-    ts = TsDownloader()
-    ts.print()
-    ts.set()
-    ts.print()
-
-    pass
+# if __name__ == '__main__':
+#     f = open('C:/Users/Tanyiqu/Desktop/tmp/index.ts', 'wb+')
+#
+#     f.close()
+#     pass
