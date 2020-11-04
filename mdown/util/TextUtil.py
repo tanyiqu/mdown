@@ -21,13 +21,13 @@ def formatTime(sec: int):
     pass
 
 
-# 字节数 转 XX.XX MB
-def byte2MB(byte: int):
-    return '%.2lf' % (byte / 1024 / 1024)
+# 字节数 转 网速
+def byte2Speed(byte: int):
+    return '%.2lf' % (byte / 1024 / 1024) + 'MiB/s'
     pass
 
 
-# 判断一个字符串是不是url
+# 建议判断一个字符串是不是url
 def isUrl(url: str):
     """
     判断一个字符串是不是url
@@ -47,5 +47,4 @@ def isPath(path: str):
 if __name__ == '__main__':
     print(isUrl('https://xxx'))
     print(isUrl(''))
-
     pass

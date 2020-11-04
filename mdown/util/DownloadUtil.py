@@ -82,7 +82,7 @@ class M3u8Downloader:
 
     # 获取 上一个时间间隔的 平均网速 1.25MB/s
     def __getCurrSpeed(self):
-        return TextUtil.byte2MB(int(self.dataPerInterval / self.interval)) + 'MB/s'
+        return TextUtil.byte2Speed(int(self.dataPerInterval / self.interval))
         pass
 
     # 获取当前完成任务数进度 [28 / 251]
@@ -91,7 +91,7 @@ class M3u8Downloader:
         pass
 
     # 进度条
-    def __getProgress(self):
+    def __getProgressBar(self, fill='=', halfFill='>'):
         # [=========>                                        ]
         # 满进度为100，换算当前进度
         progress = int((self.completeNum / self.tsLength) * 100)
@@ -111,16 +111,17 @@ class M3u8Downloader:
             num_2 = 1
             num_3 = 50 - num_1 - num_2
             pass
-        bar = '[' + '=' * num_1 + '>' * num_2 + ' ' * num_3 + ']'
+        bar = '[' + fill * num_1 + halfFill * num_2 + ' ' * num_3 + ']'
         return bar
         pass
 
     def showProgress(self):
         print('note: speed display may not be accurate.')
         while not self.isFinished():
-            print('\r' + ' ' * 120, end='')
+            # print('\r' + ' ' * 120, end='')
             print('\r%s %s %s %s %s' % (
-                self.__getCurrProgress(), self.__getProgress(), self.__getCurrPercentage(), self.__getCurrSpeed(),
+                self.__getCurrProgress(), self.__getProgressBar(halfFill='-'), self.__getCurrPercentage(),
+                self.__getCurrSpeed(),
                 self.__getCurrDuration()
             ), end='')
             # 当前时间间隔内的流量清零
@@ -131,7 +132,7 @@ class M3u8Downloader:
             pass
         else:
             print('\r%s %s %s %s %s' % (
-                self.__getCurrProgress(), self.__getProgress(), self.__getCurrPercentage(), self.__getCurrSpeed(),
+                self.__getCurrProgress(), self.__getProgressBar(), self.__getCurrPercentage(), self.__getCurrSpeed(),
                 self.__getCurrDuration()
             ))
             pass
