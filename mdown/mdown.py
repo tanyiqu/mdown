@@ -12,7 +12,7 @@ parser.add_argument("url", nargs="*", help="url of m3u8 video, default argument,
 
 parser.add_argument('-v', '--version', action='version', version=R.string.VERSION_NAME)
 
-parser.add_argument('-u', '--url', metavar='', help='to specify m3u8 video url')
+parser.add_argument('-u', '--url', metavar='', help='to specify m3u8 video URL')
 parser.add_argument('-n', '--name', metavar='', help='name of file')
 parser.add_argument('-t', '--thread', metavar='', type=int, help='threads of download progress', default=16)
 parser.add_argument('-o', '--output', metavar='', help='output path of file')
@@ -29,7 +29,8 @@ def analyseArgs(args):
 
     # 简单判断一下url
     if not TextUrl.isUrl(dit['url']):
-        print('error: "%s" is not a correct url' % dit['url'])
+        print('error: "%s" is not a correct URL' % dit['url'])
+        print('please check the link for incorrect input')
         return None
 
     # 名字
@@ -60,7 +61,7 @@ def main():
 
     # 判断有没有传url
     if len(args.url) < 1:
-        print('error: the following arguments are required: url')
+        print('error: the following arguments are required: URL')
         return
 
     # 检测参数
@@ -81,7 +82,10 @@ def main():
     print('parsing m3u8...')
     m3u8 = M3u8(args['url'])
     if not m3u8.isM3u8():
-        print('error: "%s" is not a correct url' % args['url'])
+        print()
+        print('error: "%s" is not a correct URL' % args['url'])
+        print('please check your URL through your browser')
+        return
         pass
     print('parsing succeed')
     print()
