@@ -23,7 +23,39 @@ def formatTime(sec: int):
 
 # 字节数 转 网速
 def byte2Speed(byte: int):
-    return '%.2lf' % (byte / 1024 / 1024) + 'MiB/s'
+    """
+    固定长度 12个字符的长度，不足的前补空格
+    B   [   1023B/s]
+    KB  [  1023KB/s]
+    MB  [  5.60KB/s]
+    """
+    speed = byte
+    # 小于1024Byte，网速单位为Byte/s
+    if speed < 1024:
+        speed = frontSpace(str(speed) + 'Byte/s')
+        return speed
+        pass
+
+    # 以KB/s做单位
+    speed /= 1024
+    if speed < 1024:
+        speed = frontSpace('%.2lfKB/s' % speed)
+        pass
+        return speed
+
+    # 以MB/s做单位
+    speed /= 1024
+    speed = frontSpace('%.2lfMB/s' % speed)
+    return speed
+    pass
+
+
+# 在string开头补齐空格，总长度补满num，默认12
+def frontSpace(string: str, num: int = 10):
+    while len(string) < num:
+        string = ' ' + string
+        pass
+    return string
     pass
 
 
