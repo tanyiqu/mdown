@@ -41,7 +41,7 @@ def analyseArgs(args):
 
     # 路径
     if dit['path'] is None:
-        dit['path'] = '.'
+        dit['path'] = OSUtil.getPath()
         pass
     elif not TextUtil.isPath(dit['path']):
         print('error: "%s" is not a correct path' % dit['path'])
