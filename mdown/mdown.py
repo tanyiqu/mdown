@@ -1,7 +1,8 @@
 import sys
 import R
 import argparse
-import util.TextUtil as TextUrl
+import util.TextUtil as TextUtil
+import util.OSUtil as OSUtil
 from downloader.M3u8Downloader import M3u8Downloader
 from m3u8.M3u8 import M3u8
 import threading
@@ -28,7 +29,7 @@ def analyseArgs(args):
     }
 
     # 简单判断一下url
-    if not TextUrl.isUrl(dit['url']):
+    if not TextUtil.isUrl(dit['url']):
         print('error: "%s" is not a correct URL' % dit['url'])
         print('please check the link for incorrect input')
         return None
@@ -42,7 +43,7 @@ def analyseArgs(args):
     if dit['path'] is None:
         dit['path'] = '.'
         pass
-    elif not TextUrl.isPath(dit['path']):
+    elif not TextUtil.isPath(dit['path']):
         print('error: "%s" is not a correct path' % dit['path'])
         return None
         pass
