@@ -32,7 +32,7 @@ def byte2Speed(byte: int):
     speed = byte
     # 小于1024Byte，网速单位为Byte/s
     if speed < 1024:
-        speed = frontSpace(str(speed) + 'Byte/s')
+        speed = frontSpace(str(speed) + 'B/s')
         return speed
         pass
 
