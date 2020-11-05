@@ -1,16 +1,13 @@
-"""
-文件下载模块
-"""
-
-import requests
 import time
 import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
 import util.TextUtil as TextUtil
+from downloader.Downloader import Downloader
+from downloader.TsDownloader import TsDownloader
 
 
-class M3u8Downloader:
+class M3u8Downloader(Downloader):
     """
     m3u8视频下载器
     """
@@ -72,21 +69,21 @@ class M3u8Downloader:
         pass
 
     # 获取当前下载持续时长  00:01:23
-    def __getCurrDuration(self):
+    def __getDuration(self):
         return TextUtil.formatTime(time.time() - self.startTime)
         pass
 
     # 获取当前下载百分比  12.34%
-    def __getCurrPercentage(self):
+    def __getPercentage(self):
         return '%.2lf%%' % (100.00 * (self.completeNum / self.tsLength))
 
     # 获取 上一个时间间隔的 平均网速 1.25MB/s
-    def __getCurrSpeed(self):
+    def __getSpeed(self):
         return TextUtil.byte2Speed(int(self.dataPerInterval / self.interval))
         pass
 
     # 获取当前完成任务数进度 [28 / 251]
-    def __getCurrProgress(self):
+    def __getProgress(self):
         return '[%d / %d]' % (self.completeNum, self.tsLength)
         pass
 
@@ -95,23 +92,20 @@ class M3u8Downloader:
         # [=========>                                        ]
         # 满进度为100，换算当前进度
         progress = int((self.completeNum / self.tsLength) * 100)
-        num_1 = 0
-        num_2 = 0
-        num_3 = 0
         # 计算 = 的个数 ，> 的个数 和 空格的个数
         # 如果progress为偶数，= 为 progress/2，> 为 0，空格为 50减 =的个数
         # 如果progress为奇数，= 为 (progress-1)/2，> 为 1，空格为 50减(=的个数)-1
         if progress % 2 == 0:
-            num_1 = progress // 2
-            num_2 = 0
-            num_3 = 50 - num_1
+            num_fill = progress // 2
+            num_half_fill = 0
+            num_space = 50 - num_fill
             pass
         else:
-            num_1 = (progress - 1) // 2
-            num_2 = 1
-            num_3 = 50 - num_1 - num_2
+            num_fill = (progress - 1) // 2
+            num_half_fill = 1
+            num_space = 50 - num_fill - num_half_fill
             pass
-        bar = '[' + fill * num_1 + halfFill * num_2 + ' ' * num_3 + ']'
+        bar = '[' + fill * num_fill + halfFill * num_half_fill + ' ' * num_space + ']'
         return bar
         pass
 
@@ -120,9 +114,9 @@ class M3u8Downloader:
         while not self.isFinished():
             # print('\r' + ' ' * 120, end='')
             print('\r%s %s %s %s %s' % (
-                self.__getCurrProgress(), self.__getProgressBar(halfFill='-'), self.__getCurrPercentage(),
-                self.__getCurrSpeed(),
-                self.__getCurrDuration()
+                self.__getProgress(), self.__getProgressBar(halfFill='-'), self.__getPercentage(),
+                self.__getSpeed(),
+                self.__getDuration()
             ), end='')
             # 当前时间间隔内的流量清零
             self.lock.acquire()
@@ -132,8 +126,8 @@ class M3u8Downloader:
             pass
         else:
             print('\r%s %s %s %s %s' % (
-                self.__getCurrProgress(), self.__getProgressBar(), self.__getCurrPercentage(), self.__getCurrSpeed(),
-                self.__getCurrDuration()
+                self.__getProgress(), self.__getProgressBar(), self.__getPercentage(), self.__getSpeed(),
+                self.__getDuration()
             ))
             pass
         pass
@@ -171,71 +165,3 @@ class M3u8Downloader:
         pass
 
     pass
-
-
-class TsDownloader:
-    """
-    下载ts文件的下载器
-    """
-
-    def __init__(self, url: str, path: str, num: int, parentDownloader: M3u8Downloader, timeout: int = 5,
-                 noSuffix: bool = True):
-        self.url = url
-        self.path = path
-        self.num = num
-        self.parentDownloader = parentDownloader
-        self.timeout = timeout
-        self.noSuffix = noSuffix
-        self.filename = str(num)
-        if not self.noSuffix:
-            self.filename += '.ts'
-        pass
-
-    def download(self):
-        # 两种方式
-        # 1.边下边写
-        # resp = requests.get(url=self.url, timeout=self.timeout)
-        # with open(self.path + '/' + self.filename, "wb") as f:
-        #     for data in resp.iter_content(1024):
-        #         f.write(data)
-        #     pass
-
-        # 2.下完再写
-        # resp = requests.get(url=self.url, timeout=self.timeout)
-        # with open(self.path + '/' + self.filename, "wb") as f:
-        #     f.write(resp.content)
-        #     pass
-
-        i = 0
-        # 如果请求失败就重新请求，直至请求成功
-        while True:
-            try:
-                resp = requests.get(url=self.url, timeout=self.timeout)
-                with open(self.path + '/' + self.filename, "wb") as f:
-                    for data in resp.iter_content(1024):
-                        self.parentDownloader.lock.acquire()
-                        self.parentDownloader.dataPerInterval += len(data)
-                        self.parentDownloader.lock.release()
-                        f.write(data)
-                    pass
-                # print('%s is ok' % self.num)
-                self.parentDownloader.lock.acquire()
-                self.parentDownloader.completeNum += 1
-                self.parentDownloader.lock.release()
-                break
-                pass
-            except requests.exceptions.RequestException:
-                i += 1
-                # print('%s retry %d' % (self.num, i))
-                pass
-            pass
-        pass
-        pass
-
-    pass
-
-# if __name__ == '__main__':
-#     f = open('C:/Users/Tanyiqu/Desktop/tmp/index.ts', 'wb+')
-#
-#     f.close()
-#     pass

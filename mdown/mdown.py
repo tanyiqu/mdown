@@ -2,7 +2,7 @@ import sys
 import R
 import argparse
 import util.TextUtil as TextUrl
-from util.DownloadUtil import M3u8Downloader
+from downloader.M3u8Downloader import M3u8Downloader
 from m3u8.M3u8 import M3u8
 import threading
 import time
