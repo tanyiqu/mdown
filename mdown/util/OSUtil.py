@@ -18,3 +18,7 @@ def getPath():
     return os.path.abspath('.')
     pass
 
+
+# 删除指定文件夹及其文件
+def deleteDir(path: str):
+    pass

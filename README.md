@@ -59,6 +59,10 @@ mdown https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8 -t 128
 
 
 
+软件预览
+
+![预览图](https://s1.ax1x.com/2020/11/05/BW1SgO.png)
+
 ## Bug & 不足
 
 - 如果已存在同名的文件/文件夹则不能正常下载

@@ -18,28 +18,20 @@ class M3u8Downloader(Downloader):
         self.filename = filename
         self.maxWorkers = maxWorkers
         self.interval = interval  # 计时器停顿时间间隔
-
         self.dataPerInterval = 0  # 每一个时间间隔所下载的流量
-
         # 文件输出路径
         self.outPath = ('%s\\%s' % (self.path, self.filename)).replace('\\', '/')
-
         # 临时文件存放路径
         self.tmpPath = (self.path + '\\.' + self.filename).replace('\\', '/')
-
         # ts序列长度
         self.tsLength = len(self.tsList)
-
         # 下载开始、结束时间
         self.startTime = 0
         self.endTime = 0
-
         # 锁
         self.lock = threading.Lock()
-
         # ts完成数
         self.completeNum = 0
-
         pass
 
     def download(self):

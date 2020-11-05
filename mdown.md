@@ -60,7 +60,14 @@ mdown https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8 -t 128
 
 star我的[github项目](https://github.com/tanyiqu/mdown)，或者[关注他](https://space.bilibili.com/42337616)获取更新详情
 
-**7.关于《mdown》的一些声明**
+**7.Bug & 不足**
+
+- 如果已存在同名的文件/文件夹则不能正常下载
+- 下载过后不能删除临时生成的文件夹
+- 下载失败不能续传
+- ...
+
+**8.关于《mdown》的一些声明**
 
 《mdown》只是为了大家提供一个m3u8视频下载的途径，请不要用于非法用途。
 
