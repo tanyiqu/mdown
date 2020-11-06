@@ -1,5 +1,8 @@
 # mdown
+
 Fast and simple m3u8 video downloader built with Python
+
+[注：如果下面有图片加载不出来，点这个进行查阅文档](https://gitee.com/Tanyiqu/mdown/blob/main/README.md)
 
 ## 版本
 
@@ -61,7 +64,7 @@ mdown https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8 -t 128
 
 软件预览
 
-![预览图](https://tanyiqu.github.io/mdown/imgs/preview.png)
+![预览图加载不出来的话，点文档上面的链接跳转查阅](https://tanyiqu.gitee.io/mdown/imgs/preview.png)
 
 ## Bug & 不足
 
