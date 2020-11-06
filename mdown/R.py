@@ -8,7 +8,7 @@ class Static:
 
 class string:
     # 版本号
-    VERSION = '1.0.0'
+    VERSION = '1.1.0'
 
     # 描述
     DESC = 'A fast and simple m3u8 video downloader built with Python.'

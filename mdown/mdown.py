@@ -15,7 +15,7 @@ parser.add_argument('-v', '--version', action='version', version=R.string.VERSIO
 
 parser.add_argument('-u', '--url', metavar='', help='to specify m3u8 video URL')
 parser.add_argument('-n', '--name', metavar='', help='name of file')
-parser.add_argument('-t', '--thread', metavar='', type=int, help='threads of download progress', default=16)
+parser.add_argument('-t', '--thread', metavar='', type=int, help='threads of download progress', default=32)
 parser.add_argument('-o', '--output', metavar='', help='output path of file')
 
 

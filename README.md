@@ -11,7 +11,7 @@ Fast and simple m3u8 video downloader built with Python
 
 下载打包的exe程序
 
-[点击跳转下载](https://github.com/tanyiqu/mdown/releases)
+[点击进入下载](https://github.com/tanyiqu/mdown/releases)
 
 ### macos
 
@@ -70,8 +70,17 @@ mdown https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8 -t 128
 - 下载失败不能续传
 - ...
 
+## 未来计划
+
+- 实现中断继续下载
+- ...
+
 ## 第三方库
 
 requests
 
 ...
+
+## 更新日志
+
+1.0.0 release
