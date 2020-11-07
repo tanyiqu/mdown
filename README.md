@@ -28,7 +28,7 @@ Fast and simple m3u8 video downloader built with Python
 
 添加环境变量，在控制台调用
 
-[具体使用说明点这里](https://gitee.com/Tanyiqu/mdown/blob/main/docs/HowToUse.md)
+[具体使用说明点这里](https://gitee.com/Tanyiqu/mdown/blob/main/docs/HowToUse_zh.md)
 
 ### 参数
 
