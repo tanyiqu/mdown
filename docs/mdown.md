@@ -24,7 +24,11 @@ mdown解析传入的url链接，然后根据用户给定的线程数来分配下
 
 **5.如何使用《mdown》**
 
-添加环境变量，在控制台调用，参数为：
+添加环境变量，在控制台调用
+
+[具体使用说明点这里](https://gitee.com/Tanyiqu/mdown/blob/main/docs/HowToUse_zh.md)
+
+参数为：
 
 -u --url：指定url链接，默认为第一个参数（如有其他参数，则url一定要在第一个位置）
 
