@@ -10,4 +10,8 @@ class Downloader:
     def download(self):
         pass
 
+    @abstractmethod
+    def __onFinished(self):
+        pass
+
     pass

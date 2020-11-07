@@ -49,8 +49,8 @@ def analyseArgs(args):
         pass
 
     # 线程数
-    if not 0 < dit['thread'] < 129:
-        print('error: the number of threads must be greater than 0 and less than or equal to 128')
+    if not 0 < dit['thread'] < 256:
+        print('error: the number of threads must be greater than 0 and less than or equal to 256')
         return None
 
     return dit

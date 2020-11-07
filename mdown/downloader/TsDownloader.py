@@ -20,6 +20,7 @@ class TsDownloader(Downloader):
             self.filename += '.ts'
         pass
 
+
     def download(self):
         i = 0
         # 如果请求失败就重新请求，直至请求成功
@@ -35,6 +36,7 @@ class TsDownloader(Downloader):
                     pass
                 self.parentDownloader.lock.acquire()
                 self.parentDownloader.completeNum += 1
+                self.__onFinished()
                 self.parentDownloader.lock.release()
                 break
                 pass
@@ -43,6 +45,9 @@ class TsDownloader(Downloader):
                 pass
             pass
         pass
+        pass
+
+    def __onFinished(self):
         pass
 
     pass

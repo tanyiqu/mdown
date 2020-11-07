@@ -3,6 +3,7 @@ import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
 import util.TextUtil as TextUtil
+import util.OSUtil as OSUtil
 from downloader.Downloader import Downloader
 from downloader.TsDownloader import TsDownloader
 
@@ -58,6 +59,12 @@ class M3u8Downloader(Downloader):
 
     def isFinished(self):
         return self.completeNum == self.tsLength
+        pass
+
+    # 下载成功回调
+    def __onFinished(self):
+        # 清除临时文件
+        OSUtil.rmDir(self.tmpPath)
         pass
 
     # 获取当前下载持续时长  00:01:23
@@ -153,7 +160,9 @@ class M3u8Downloader(Downloader):
             pass
         file.close()
 
+        self.__onFinished()
         print('merging finished')
+
         pass
 
     pass
