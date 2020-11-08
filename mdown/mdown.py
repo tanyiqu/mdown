@@ -9,14 +9,20 @@ import threading
 import time
 
 parser = argparse.ArgumentParser(description=R.string.DESC)
-parser.add_argument("url", nargs="*", help="url of m3u8 video, default argument, required")
+parser.add_argument("url", nargs="?", help="下载视频的URL，必须在首位")
 
-parser.add_argument('-v', '--version', action='version', version=R.string.VERSION_NAME)
+parser.add_argument('-v', '--version', action='version', version=R.string.VERSION_NAME, help='显示程序的版本号')
 
-parser.add_argument('-u', '--url', metavar='', help='to specify m3u8 video URL')
-parser.add_argument('-n', '--name', metavar='', help='name of file')
-parser.add_argument('-t', '--thread', metavar='', type=int, help='threads of download progress', default=32)
-parser.add_argument('-o', '--output', metavar='', help='output path of file')
+# 需要跟值的参数
+parser.add_argument('-n', '--name', metavar='', help='指定下载文件名称')
+parser.add_argument('-t', '--thread', metavar='', type=int, help='指定下载的线程数', default=32)
+parser.add_argument('-o', '--output', metavar='', help='输出路径')
+parser.add_argument('-s', '--slice', metavar='', type=int, help='指定要下载第几个视频片段')
+parser.add_argument('--begin', metavar='', type=int, help='指定从第几个视频片段开始', default=0)
+parser.add_argument('--end', metavar='', type=int, help='指定从第几个视频片段结束', default=-1)
+
+# 不需要跟值的参数
+parser.add_argument('--temp', action='store_true', help='保留下载时的临时文件')
 
 
 # 检测传入的参数，返回字典形式的参数列表，如果有检测失败的则返回None
@@ -60,6 +66,9 @@ def main():
     # 接收系统参数
     args = parser.parse_args()
 
+    print(args)
+    return
+
     # 判断有没有传url
     if len(args.url) < 1:
         print('error: the following arguments are required: URL')
@@ -67,6 +76,7 @@ def main():
 
     # 检测参数
     args = analyseArgs(args)
+
     if args is None:
         return
 
