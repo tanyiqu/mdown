@@ -113,36 +113,30 @@ class M3u8Downloader(Downloader):
         pass
 
     # 进度条
-    def __getCompatibleProgressBar(self):
+    def __getCompatibleProgressBar(self, fill: str = '=', halfFill: str = '-', width: int = 33):
         """
-        [████████████████████████▓]
-        █
-        ▓
-        ▌
+        [==========-                      ]
+        :param width: 进度条宽度
+        :return:
         """
+
+        if not 10 < width <= 100:
+            width = 33
+
         # 满进度为100
         progress = int((self.completeNum / self.tsLength) * 100)
 
-        bar = '['
-
-        # 计算全黑色
-        r = 25
-        num = progress // 4
-        bar += '█' * num
-        r -= num
-
-        rest = progress % 4
-        if rest == 3:
-            bar += '▓'
-            r -= 1
-            pass
-        elif rest == 2:
-            bar += '▌'
-            r -= 1
-            pass
-        # 计算空格
-        bar += ' ' * r + ']'
-        return bar
+        calcProgress = progress * width / 100
+        # 计算=的个数
+        num_fill = int(calcProgress)
+        # 计算-的个数
+        if (calcProgress - int(calcProgress)) >= 0.5:
+            num_half_fill = 1
+        else:
+            num_half_fill = 0
+        # 计算空格的个数
+        num_space = width - num_fill - num_half_fill
+        return '[%s%s%s]' % (fill * num_fill, halfFill * num_half_fill, ' ' * num_space)
         pass
 
     def showProgress(self):
