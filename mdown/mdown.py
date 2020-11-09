@@ -1,12 +1,11 @@
-import sys
 import R
 import argparse
 import util.TextUtil as TextUtil
 import util.OSUtil as OSUtil
 from downloader.M3u8Downloader import M3u8Downloader
 from m3u8.M3u8 import M3u8
-import threading
-import time
+
+from config.Configuration import Configuration
 
 parser = argparse.ArgumentParser(description=R.string.DESC)
 parser.add_argument("url", nargs="?", help="下载视频的URL，必须在首位")
@@ -28,11 +27,20 @@ parser.add_argument('--temp', action='store_true', help='保留下载时的临�
 
 # 检测传入的参数，返回字典形式的参数列表，如果有检测失败的则返回None
 def analyseArgs(args):
+    if args.url is None:
+        print('error: the following arguments are required: URL')
+        return None
+
     dit = {
-        'url': args.url[0],
+        'url': args.url,
         'name': args.name,
         'thread': args.thread,
-        'path': args.output
+        'path': args.output,
+        'begin': args.begin,
+        'end': args.end,
+        'slice': args.slice,
+        'wait': args.wait,
+        'temp': args.temp
     }
 
     # 简单判断一下url
@@ -67,9 +75,6 @@ def main():
     # 接收系统参数
     args = parser.parse_args()
 
-    print(args)
-    return
-
     # 判断有没有传url
     if len(args.url) < 1:
         print('error: the following arguments are required: URL')
@@ -77,6 +82,11 @@ def main():
 
     # 检测参数
     args = analyseArgs(args)
+
+    print(Configuration.path)
+
+    print(args)
+    return
 
     if args is None:
         return
