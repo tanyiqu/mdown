@@ -82,12 +82,16 @@ class M3u8Downloader(Downloader):
         pass
 
     # 获取当前完成任务数进度 [28 / 251]
-    def __getProgress(self):
-        return '[%d / %d]' % (self.completeNum, self.tsLength)
+    def __getProgress(self, compact=False):
+        if compact:
+            return '[%d/%d]' % (self.completeNum, self.tsLength)
+        else:
+            return '[%d / %d]' % (self.completeNum, self.tsLength)
         pass
 
     # 进度条
     def __getProgressBar(self, fill='=', halfFill='>'):
+        warnings.warn("此方法已过时，请考虑 __getCompatibleProgressBar", DeprecationWarning)
         # [=========>                                        ]
         # 满进度为100，换算当前进度
         progress = int((self.completeNum / self.tsLength) * 100)
@@ -108,12 +112,45 @@ class M3u8Downloader(Downloader):
         return bar
         pass
 
+    # 进度条
+    def __getCompatibleProgressBar(self):
+        """
+        [████████████████████████▓]
+        █
+        ▓
+        ▌
+        """
+        # 满进度为100
+        progress = int((self.completeNum / self.tsLength) * 100)
+
+        bar = '['
+
+        # 计算全黑色
+        r = 25
+        num = progress // 4
+        bar += '█' * num
+        r -= num
+
+        rest = progress % 4
+        if rest == 3:
+            bar += '▓'
+            r -= 1
+            pass
+        elif rest == 2:
+            bar += '▌'
+            r -= 1
+            pass
+        # 计算空格
+        bar += ' ' * r + ']'
+        return bar
+        pass
+
     def showProgress(self):
         print('note: speed display may not be accurate.')
         while not self.isFinished():
             # print('\r' + ' ' * 120, end='')
             print('\r%s %s %s %s %s' % (
-                self.__getProgress(), self.__getProgressBar(halfFill='-'), self.__getPercentage(),
+                self.__getProgress(compact=True), self.__getCompatibleProgressBar(), self.__getPercentage(),
                 self.__getSpeed(),
                 self.__getDuration()
             ), end='')
@@ -125,7 +162,8 @@ class M3u8Downloader(Downloader):
             pass
         else:
             print('\r%s %s %s %s %s' % (
-                self.__getProgress(), self.__getProgressBar(), self.__getPercentage(), self.__getSpeed(),
+                self.__getProgress(compact=True), self.__getCompatibleProgressBar(), self.__getPercentage(),
+                self.__getSpeed(),
                 self.__getDuration()
             ))
             pass

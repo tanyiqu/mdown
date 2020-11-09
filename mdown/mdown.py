@@ -70,6 +70,8 @@ def analyseArgs(args):
 
 
 def main():
+
+    print('[████████████████████████▓]')
     # 接收系统参数
     args = parser.parse_args()
 
