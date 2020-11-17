@@ -1,7 +1,6 @@
 import util.WebUtil as WebUtil
 import util.TextUtil as TextUrl
 import re
-from config.Configuration import Configuration
 
 """
 思路：
@@ -31,11 +30,12 @@ class M3u8:
     __durationSec = 0.0  # 视频的时长(秒)
     __duration = '00:00:00'  # 视频的时长(hh:mm:ss)
     __isM3u8 = False  # 是否是m3u8链接
+    __timeout = -1
 
     # 构造
-    def __init__(self, url):
-        print('M3u8构造', Configuration.wait)
+    def __init__(self, url: str, timeout: int):
         self.__url = url
+        self.__timeout = timeout
         self.__detectUrl()
         if self.__isM3u8:
             self.__getList()
@@ -47,7 +47,7 @@ class M3u8:
         思路：获取链接内容，然后正则匹配是否包含 #EXTM3U
         如果包含则匹配 #EXTINF
         """
-        txt = WebUtil.getText(self.__url, timeout=Configuration.wait)
+        txt = WebUtil.getText(self.__url, timeout=self.__timeout)
         if txt == '':
             self.__isM3u8 = False
             return
@@ -86,7 +86,7 @@ class M3u8:
         self.__innerUrl = self.__urlPre + lk
 
         # 获取链接内容
-        txt = WebUtil.getText(self.__innerUrl, timeout=Configuration.wait)
+        txt = WebUtil.getText(self.__innerUrl, timeout=self.__timeout)
         if txt == '':
             self.__isM3u8 = False
         else:
@@ -145,7 +145,7 @@ class M3u8:
 
 if __name__ == '__main__':
     # m = M3u8('https://meng.wuyou-zuida.com/20200227/26199_992e4909/index.m3u8')
-    m = M3u8('https://leshi.cdn-zuyida.com/20170604/L9pBumBj/index.m3u8')
+    m = M3u8('https://leshi.cdn-zuyida.com/20170604/L9pBumBj/index.m3u8', 5)
     # m = M3u8('https://douban.donghongzuida.com/20200918/9893_7cec614e/index.m3u8')
     # m = M3u8('https://xigua-cdn.haima-zuida.com/20200625/8575_d71b372e/index.m3u8')
     # m = M3u8('https://yuledy.helanzuida.com/20200402/1745_5f787176/index.m3u8')

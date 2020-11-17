@@ -22,7 +22,7 @@ class Configuration:
     # 要下载那个分段,只下载这个分段
     slice = None
     # 请求资源时，超时几秒后重试
-    wait = None
+    timeout = None
     # 是否保留临时文件
     temp = False
 
@@ -38,7 +38,7 @@ class Configuration:
         print('end', Configuration.end)
 
         print('slice', Configuration.slice)
-        print('wait', Configuration.wait)
+        print('timeout', Configuration.wait)
         print('temp', Configuration.temp)
         print('===============================')
 
