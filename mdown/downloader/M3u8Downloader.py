@@ -20,7 +20,8 @@ class M3u8Downloader(Downloader):
                  filename: str,
                  maxWorkers: int,
                  timeout: int,
-                 interval: float = 0.5):
+                 interval: float = 0.5,
+                 temp: bool = False):
         """
         构造器
         :param tsList: 下载链接的list
@@ -29,6 +30,7 @@ class M3u8Downloader(Downloader):
         :param maxWorkers: 最大的线程数
         :param timeout: 等待几秒
         :param interval: 时间间隔，用于记录网速等
+        :param temp: 是否保留临时文件 为True时保留
         """
 
         self.tsList = tsList
@@ -37,6 +39,7 @@ class M3u8Downloader(Downloader):
         self.maxWorkers = maxWorkers
         self.timeout = timeout
         self.interval = interval  # 计时器停顿时间间隔
+        self.temp = temp
         self.dataPerInterval = 0  # 每一个时间间隔所下载的流量
         # 文件输出路径
         self.outPath = ('%s\\%s' % (self.path, self.filename)).replace('\\', '/')
@@ -82,7 +85,7 @@ class M3u8Downloader(Downloader):
     # 下载成功回调
     def __onFinished(self):
         # 清除临时文件
-        if not Configuration.temp:
+        if not self.temp:
             OSUtil.rmDir(self.tmpPath)
         pass
 

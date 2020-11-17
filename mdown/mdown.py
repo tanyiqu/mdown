@@ -109,7 +109,10 @@ def main():
                                 filename=Configuration.name,
                                 maxWorkers=Configuration.thread,
                                 timeout=Configuration.timeout,
-                                interval=0.2)
+                                interval=0.2,
+                                temp=Configuration.temp)
+
+    # 下载视频
     print('downloading...')
     downloader.download()
 
