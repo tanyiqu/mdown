@@ -1,22 +1,30 @@
 import requests
 from downloader.Downloader import Downloader
-from config.Configuration import Configuration
 
 
 class TsDownloader(Downloader):
     """
     下载ts文件的下载器
+    真正实现下载功能的下载器
     """
 
-    def __init__(self, url: str, path: str, num: int, parentDownloader: Downloader, timeout: int = -1,
+    # 构造器
+    def __init__(self, url: str, path: str, num: int, timeout: int, parentDownloader: Downloader,
                  noSuffix: bool = True):
+        """
+        构造器
+        :param url: 要下载的那一分段的url
+        :param path: 被下载的路径（只是路径）
+        :param num: 这是第几个分段，从0开始
+        :param timeout: 等待几秒
+        :param parentDownloader: 指定一个父下载器，M3u8Downloader
+        :param noSuffix: 指定下载的文件，带不带【.ts】后缀
+        """
         self.url = url
         self.path = path
         self.num = num
         self.parentDownloader = parentDownloader
         self.timeout = timeout
-        if timeout < 1:
-            self.timeout = Configuration.wait
         self.noSuffix = noSuffix
         self.filename = str(num)
         if not self.noSuffix:

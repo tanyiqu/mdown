@@ -105,6 +105,7 @@ def main():
 
     # 构造M3u8Downloader
     downloader = M3u8Downloader(m3u8.getList(), Configuration.outPath, Configuration.name, Configuration.thread,
+                                Configuration.wait,
                                 interval=0.2)
     print('downloading...')
     downloader.download()

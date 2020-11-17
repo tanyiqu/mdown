@@ -47,7 +47,7 @@ class M3u8:
         思路：获取链接内容，然后正则匹配是否包含 #EXTM3U
         如果包含则匹配 #EXTINF
         """
-        txt = WebUtil.getText(self.__url)
+        txt = WebUtil.getText(self.__url, timeout=Configuration.wait)
         if txt == '':
             self.__isM3u8 = False
             return
@@ -86,7 +86,7 @@ class M3u8:
         self.__innerUrl = self.__urlPre + lk
 
         # 获取链接内容
-        txt = WebUtil.getText(self.__innerUrl)
+        txt = WebUtil.getText(self.__innerUrl, timeout=Configuration.wait)
         if txt == '':
             self.__isM3u8 = False
         else:

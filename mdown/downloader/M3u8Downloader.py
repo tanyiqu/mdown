@@ -6,7 +6,6 @@ import util.TextUtil as TextUtil
 import util.OSUtil as OSUtil
 from downloader.Downloader import Downloader
 from downloader.TsDownloader import TsDownloader
-from config.Configuration import Configuration
 
 
 class M3u8Downloader(Downloader):
@@ -14,11 +13,12 @@ class M3u8Downloader(Downloader):
     m3u8视频下载器
     """
 
-    def __init__(self, tsList: list, path: str, filename: str, maxWorkers: int, interval: float = 0.5):
+    def __init__(self, tsList: list, path: str, filename: str, maxWorkers: int, timeout: int, interval: float = 0.5):
         self.tsList = tsList
         self.path = path
         self.filename = filename
         self.maxWorkers = maxWorkers
+        self.timeout = timeout
         self.interval = interval  # 计时器停顿时间间隔
         self.dataPerInterval = 0  # 每一个时间间隔所下载的流量
         # 文件输出路径
@@ -175,8 +175,8 @@ class M3u8Downloader(Downloader):
             url
         }
         """
-        downloader = TsDownloader(arg['url'], self.tmpPath, arg['index'], parentDownloader=self,
-                                  timeout=Configuration.wait)
+        downloader = TsDownloader(arg['url'], self.tmpPath, arg['index'], timeout=self.timeout,
+                                  parentDownloader=self)
         downloader.download()
         pass
 

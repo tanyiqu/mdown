@@ -3,11 +3,10 @@
 """
 import requests
 import R
-from config.Configuration import Configuration
 
 
 # 获取链接的文本内容，下载失败返回None
-def getText(url: str, timeout: int = -1, retries: int = 3, show: bool = True):
+def getText(url: str, timeout: int, retries: int = 3, show: bool = True):
     """
     获取链接的文本内容，下载失败返回"null"
     :param url:     链接
@@ -18,7 +17,7 @@ def getText(url: str, timeout: int = -1, retries: int = 3, show: bool = True):
     """
     # 检查参数
     if timeout < 1:
-        timeout = Configuration.wait
+        timeout = 5
     if retries < 1:
         retries = 3
     if show:
