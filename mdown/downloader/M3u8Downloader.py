@@ -65,7 +65,8 @@ class M3u8Downloader(Downloader):
     # 下载成功回调
     def __onFinished(self):
         # 清除临时文件
-        OSUtil.rmDir(self.tmpPath)
+        if not Configuration.temp:
+            OSUtil.rmDir(self.tmpPath)
         pass
 
     # 获取当前下载持续时长  00:01:23
