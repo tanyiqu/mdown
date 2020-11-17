@@ -9,7 +9,12 @@ class TsDownloader(Downloader):
     """
 
     # 构造器
-    def __init__(self, url: str, path: str, num: int, timeout: int, parentDownloader: Downloader,
+    def __init__(self,
+                 url: str,
+                 path: str,
+                 num: int,
+                 timeout: int,
+                 parentDownloader: Downloader,
                  noSuffix: bool = True):
         """
         构造器
@@ -20,6 +25,7 @@ class TsDownloader(Downloader):
         :param parentDownloader: 指定一个父下载器，M3u8Downloader
         :param noSuffix: 指定下载的文件，带不带【.ts】后缀
         """
+
         self.url = url
         self.path = path
         self.num = num

@@ -13,7 +13,24 @@ class M3u8Downloader(Downloader):
     m3u8视频下载器
     """
 
-    def __init__(self, tsList: list, path: str, filename: str, maxWorkers: int, timeout: int, interval: float = 0.5):
+    # 构造器
+    def __init__(self,
+                 tsList: list,
+                 path: str,
+                 filename: str,
+                 maxWorkers: int,
+                 timeout: int,
+                 interval: float = 0.5):
+        """
+        构造器
+        :param tsList: 下载链接的list
+        :param path: 下载的路径（是路径）
+        :param filename: 下载文件的名字
+        :param maxWorkers: 最大的线程数
+        :param timeout: 等待几秒
+        :param interval: 时间间隔，用于记录网速等
+        """
+
         self.tsList = tsList
         self.path = path
         self.filename = filename
