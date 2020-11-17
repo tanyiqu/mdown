@@ -4,9 +4,9 @@ Fast and simple m3u8 video downloader built with Python
 
 [注：如果下面有图片加载不出来，点这个进行查阅文档](https://gitee.com/tanyiqu/mdown/blob/main/README.md)
 
-## 版本
+## 当前版本
 
-1.0.0 发布版
+1.1.0-release
 
 ## 安装
 
@@ -64,14 +64,35 @@ mdown https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8 -t 128
 
 
 
+--timeout：指定获取资源无响应时，等待几秒重试，默认（不加时这个参数）为5s
+
+```shell
+mdown https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8 --timeout 10
+```
+
+
+
+--temp：添加这个参数，指定下载后保留临时文件，默认（不加时这个参数）不保留临时文件
+
+```shell
+mdown https://mei.huazuida.com/20191220/19588_51b84e32/index.m3u8 --temp
+```
+
+
+
 软件预览
 
-![预览图加载不出来的话，点文档上面的链接跳转查阅](https://tanyiqu.gitee.io/mdown/res/preview.png)
+[![预览图加载不出来的话，点文档上面的链接跳转查阅](https://s1.ax1x.com/2020/11/05/BW1SgO.png)](https://imgchr.com/i/BW1SgO)
+
+## 更新日志
+
+- 下载后可以选择是否删除临时生成的文件夹
+- 添加--timeout参数，指定无形应是几秒后重试
+- 修复win7进度条显示问题
+- ...
 
 ## Bug & 不足
 
-- 如果已存在同名的文件/文件夹则不能正常下载
-- 下载过后不能删除临时生成的文件夹
 - 下载失败不能续传
 - ...
 
@@ -88,4 +109,6 @@ requests
 
 ## 更新日志
 
-1.0.0 release
+1.1.0-release
+
+1.0.0-release
