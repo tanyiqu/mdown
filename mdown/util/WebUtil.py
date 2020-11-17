@@ -3,21 +3,22 @@
 """
 import requests
 import R
+from config.Configuration import Configuration
 
 
 # 获取链接的文本内容，下载失败返回None
-def getText(url: str, timeout: int = 5, retries: int = 3, show: bool = True):
+def getText(url: str, timeout: int = -1, retries: int = 3, show: bool = True):
     """
     获取链接的文本内容，下载失败返回"null"
     :param url:     链接
-    :param timeout: 每次请求的等待时长，默认5秒
+    :param timeout: 每次请求的等待时长
     :param retries: 超时重试次数，不是总请求次数，总共请求次数为retries+1
     :param show:    显示提示
     :return: 文本内容
     """
     # 检查参数
     if timeout < 1:
-        timeout = 5
+        timeout = Configuration.wait
     if retries < 1:
         retries = 3
     if show:

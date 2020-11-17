@@ -1,6 +1,7 @@
 import util.WebUtil as WebUtil
 import util.TextUtil as TextUrl
 import re
+from config.Configuration import Configuration
 
 """
 思路：
@@ -19,20 +20,21 @@ def getPre(url: str):
 
 
 class M3u8:
-    __url = ''                  # m3u8链接
-    __urlPre = ''               # m3u8链接前缀
-    __innerUrl = ''             # 内层m3u8链接
-    __innerUrlPre = ''          # 内层m3u8链接前缀
-    __indexContent = ''         # 外层文件内容
-    __content = ''              # 内层文件内容
-    __tsList = []               # ts文件集合
-    __tsLength = 0              # ts文件个数
-    __durationSec = 0.0         # 视频的时长(秒)
-    __duration = '00:00:00'     # 视频的时长(hh:mm:ss)
-    __isM3u8 = False            # 是否是m3u8链接
+    __url = ''  # m3u8链接
+    __urlPre = ''  # m3u8链接前缀
+    __innerUrl = ''  # 内层m3u8链接
+    __innerUrlPre = ''  # 内层m3u8链接前缀
+    __indexContent = ''  # 外层文件内容
+    __content = ''  # 内层文件内容
+    __tsList = []  # ts文件集合
+    __tsLength = 0  # ts文件个数
+    __durationSec = 0.0  # 视频的时长(秒)
+    __duration = '00:00:00'  # 视频的时长(hh:mm:ss)
+    __isM3u8 = False  # 是否是m3u8链接
 
     # 构造
     def __init__(self, url):
+        print('M3u8构造', Configuration.wait)
         self.__url = url
         self.__detectUrl()
         if self.__isM3u8:

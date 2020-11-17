@@ -73,15 +73,11 @@ def main():
     # 接收系统参数
     args = parser.parse_args()
 
-    # 判断有没有传url
-    if len(args.url) < 1:
-        print('error: the following arguments are required: URL')
-        return
-
     # 检测参数
     analyseArgs(args)
 
     # Configuration.showConfig()
+    # return
 
     # 开始
     print()

@@ -6,6 +6,7 @@ import util.TextUtil as TextUtil
 import util.OSUtil as OSUtil
 from downloader.Downloader import Downloader
 from downloader.TsDownloader import TsDownloader
+from config.Configuration import Configuration
 
 
 class M3u8Downloader(Downloader):
@@ -173,7 +174,8 @@ class M3u8Downloader(Downloader):
             url
         }
         """
-        downloader = TsDownloader(arg['url'], self.tmpPath, arg['index'], self)
+        downloader = TsDownloader(arg['url'], self.tmpPath, arg['index'], parentDownloader=self,
+                                  timeout=Configuration.wait)
         downloader.download()
         pass
 

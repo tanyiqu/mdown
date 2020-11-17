@@ -28,6 +28,7 @@ class Configuration:
 
     @staticmethod
     def showConfig():
+        print('===============================')
         print('url', Configuration.url)
         print('name', Configuration.name)
         print('thread', Configuration.thread)
@@ -39,6 +40,8 @@ class Configuration:
         print('slice', Configuration.slice)
         print('wait', Configuration.wait)
         print('temp', Configuration.temp)
+        print('===============================')
+
         pass
 
     pass
