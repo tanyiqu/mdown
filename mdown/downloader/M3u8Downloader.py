@@ -44,7 +44,7 @@ class M3u8Downloader(Downloader):
         # 文件输出路径
         self.outPath = ('%s\\%s' % (self.path, self.filename)).replace('\\', '/')
         # 临时文件存放路径
-        self.tmpPath = (self.path + '\\.' + self.filename).replace('\\', '/')
+        self.tmpPath = (self.path + '\\__' + self.filename).replace('\\', '/')
         # ts序列长度
         self.tsLength = len(self.tsList)
         # 下载开始、结束时间
@@ -208,7 +208,7 @@ class M3u8Downloader(Downloader):
 
         file = open(self.outPath, 'wb+')
         for i in range(self.tsLength):
-            tsPath = '%s\\%s' % (self.tmpPath, i)
+            tsPath = '%s/%s' % (self.tmpPath, i)
             with open(tsPath, 'rb') as f:
                 file.write(f.read())
                 pass
