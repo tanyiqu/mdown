@@ -116,6 +116,10 @@ def main():
     print('downloading...')
     downloader.download()
 
+    # 打印项目信息
+    print()
+    print('项目地址：https://github.com/tanyiqu/mdown，觉得好用就给个star吧！')
+
     pass
 
 
