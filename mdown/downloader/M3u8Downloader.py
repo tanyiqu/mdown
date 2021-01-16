@@ -44,7 +44,7 @@ class M3u8Downloader(Downloader):
         # 文件输出路径
         self.outPath = ('%s\\%s' % (self.path, self.filename)).replace('\\', '/')
         # 临时文件存放路径
-        self.tmpPath = (self.path + '\\__' + self.filename).replace('\\', '/')
+        self.tmpPath = (self.path + '\\' + self.filename + '__tmp').replace('\\', '/')
         # ts序列长度
         self.tsLength = len(self.tsList)
         # 下载开始、结束时间

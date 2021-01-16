@@ -38,7 +38,7 @@ class Configuration:
         print('end', Configuration.end)
 
         print('slice', Configuration.slice)
-        print('timeout', Configuration.wait)
+        print('timeout', Configuration.timeout)
         print('temp', Configuration.temp)
         print('===============================')
 
